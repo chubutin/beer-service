@@ -31,12 +31,13 @@ public class BeerDao {
     }
 
     public BeerDto getBeerById(UUID id){
-        for (BeerDto b : beers){
-            if (b.getId().equals(id)) {
-                return b;
-            }
-        }
-        return null;
+        return beers.get(0);
+//        for (BeerDto b : beers){
+//            if (b.getId().equals(id)) {
+//                return b;
+//            }
+//        }
+//        return null;
     }
 
     public BeerDto addBeer(BeerDto beer) {
@@ -47,4 +48,5 @@ public class BeerDao {
         beerCount+=1;
         return beer;
     }
+
 }

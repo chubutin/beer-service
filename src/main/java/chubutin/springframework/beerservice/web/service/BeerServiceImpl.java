@@ -31,5 +31,4 @@ public class BeerServiceImpl implements BeerService {
         return beerDao.addBeer(beerDto);
     }
 
-
 }

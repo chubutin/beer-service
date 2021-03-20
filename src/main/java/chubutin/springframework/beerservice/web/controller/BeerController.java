@@ -3,6 +3,7 @@ package chubutin.springframework.beerservice.web.controller;
 import chubutin.springframework.beerservice.web.model.BeerDto;
 import chubutin.springframework.beerservice.web.model.BeerPagedList;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -30,6 +31,11 @@ public class BeerController {
 
     @PostMapping
     public ResponseEntity saveBeer(@RequestBody BeerDto beerDto) {
-        return new ResponseEntity(beerService.saveBeer(beerDto), HttpStatus.CREATED);
+        BeerDto savedDto = beerService.saveBeer(beerDto);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Location", "/api/v1/beer/" + savedDto.getId().toString());
+        return new ResponseEntity(headers, HttpStatus.CREATED);
     }
+
 }
