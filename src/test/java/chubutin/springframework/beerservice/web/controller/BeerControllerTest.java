@@ -1,18 +1,14 @@
 package chubutin.springframework.beerservice.web.controller;
 
-import chubutin.springframework.beerservice.web.dao.BeerDao;
 import chubutin.springframework.beerservice.web.model.BeerDto;
 import chubutin.springframework.beerservice.web.model.BeerStyleEnum;
-import chubutin.springframework.beerservice.web.service.BeerService;
 import chubutin.springframework.beerservice.web.service.BeerServiceImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.support.AnnotationConfigContextLoader;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.UUID;
@@ -22,7 +18,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(BeerController.class)
 //these classes are loaded by hand because WebMvcTest only loads RestControllers
-@ContextConfiguration(classes = { BeerServiceImpl.class, BeerDao.class, BeerController.class})
+@ContextConfiguration(classes = { BeerServiceImpl.class, BeerController.class})
 class BeerControllerTest {
 
     @Autowired

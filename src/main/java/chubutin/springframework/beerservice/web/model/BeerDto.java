@@ -1,45 +1,28 @@
 package chubutin.springframework.beerservice.web.model;
 
-import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.UpdateTimestamp;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
-import java.math.BigDecimal;
-import java.sql.Timestamp;
+import java.time.OffsetDateTime;
 import java.util.UUID;
 
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Entity
 public class BeerDto {
-
-    @Id
-    @GeneratedValue(generator = "UUID")
-    @GenericGenerator(name= "UUID", strategy = "org.hibernate.id.UUIDGenerator")
-    @Column(length = 36, columnDefinition = "varchar", updatable = false, nullable = false)
     private UUID id;
-
-    @Version
     private Long version;
 
-    @CreationTimestamp
-    @Column(updatable = false)
-    private Timestamp createdDate;
+    private OffsetDateTime createdDate;
+    private OffsetDateTime lastModifiedDate;
 
-    @UpdateTimestamp
-    private Timestamp lastModifiedDate;
     private String beerName;
-    private String beerStyle;
+    private BeerStyleEnum beerStyle;
 
-    @Column(unique = true)
     private Long upc;
-    private BigDecimal price;
 
-    private Integer minOnHand;
-    private Integer quantityToBrew;
+    private Integer quantityOnHand;
 }
