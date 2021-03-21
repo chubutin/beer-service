@@ -3,6 +3,7 @@ package chubutin.springframework.beerservice.web.controller;
 import chubutin.springframework.beerservice.web.model.BeerDto;
 import chubutin.springframework.beerservice.services.BeerServiceImpl;
 
+import chubutin.springframework.beerservice.web.model.BeerStyleEnum;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.math.BigDecimal;
 import java.util.UUID;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -18,7 +20,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(BeerController.class)
 //these classes are loaded by hand because WebMvcTest only loads RestControllers
-@ContextConfiguration(classes = { BeerServiceImpl.class, BeerController.class})
+@ContextConfiguration(classes = { BeerServiceImpl.class, BeerController.class, MvcExceptionHandler.class})
 class BeerControllerTest {
 
     @Autowired
@@ -42,7 +44,9 @@ class BeerControllerTest {
     void handlePost() throws  Exception{
         BeerDto beerDto = BeerDto.builder()
                 .beerName("Heineken")
-                .beerStyle("LAGER")
+                .beerStyle(BeerStyleEnum.IPA)
+                .upc(1234567890L)
+                .price(new BigDecimal("1.20"))
                 .build();
         String beerDtoJson = objectMapper.writeValueAsString(beerDto);
 
@@ -55,7 +59,7 @@ class BeerControllerTest {
     @Test
     void handlePost400MissingBeerName() throws  Exception{
         BeerDto beerDto = BeerDto.builder()
-                .beerStyle("LAGER")
+                .beerStyle(BeerStyleEnum.IPA)
                 .build();
         String beerDtoJson = objectMapper.writeValueAsString(beerDto);
 
@@ -82,7 +86,9 @@ class BeerControllerTest {
     void handlePut() throws  Exception{
         BeerDto beerDto = BeerDto.builder()
                 .beerName("Heineken")
-                .beerStyle("LAGER")
+                .beerStyle(BeerStyleEnum.IPA)
+                .upc(1234567890L)
+                .price(new BigDecimal("1.20"))
                 .build();
         String beerDtoJson = objectMapper.writeValueAsString(beerDto);
 

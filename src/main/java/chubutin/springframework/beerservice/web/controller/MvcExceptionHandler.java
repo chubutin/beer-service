@@ -1,5 +1,6 @@
 package chubutin.springframework.beerservice.web.controller;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -14,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Slf4j
 @EnableWebMvc
 @RestControllerAdvice
 public class MvcExceptionHandler {
@@ -49,7 +51,7 @@ public class MvcExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity generalErrorHandler(Exception e){
-        System.out.println("General handler error");
+        log.error("General handler error", e);
         return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
     }
 }

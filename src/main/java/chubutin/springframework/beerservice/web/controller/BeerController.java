@@ -3,6 +3,7 @@ package chubutin.springframework.beerservice.web.controller;
 import chubutin.springframework.beerservice.web.model.BeerDto;
 import chubutin.springframework.beerservice.services.BeerService;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -15,6 +16,7 @@ import javax.validation.constraints.NotNull;
 import java.util.UUID;
 
 @Validated
+@RequiredArgsConstructor
 @RequestMapping(value = "/api/v1/beer")
 @RestController
 public class BeerController {
