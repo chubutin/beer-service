@@ -5,6 +5,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Null;
+import javax.validation.constraints.Positive;
 import java.time.OffsetDateTime;
 import java.util.UUID;
 
@@ -13,16 +16,23 @@ import java.util.UUID;
 @AllArgsConstructor
 @Builder
 public class BeerDto {
+
+    @Null
     private UUID id;
-    private Long version;
+//    @NotBlank
+//    private Long version;
 
-    private OffsetDateTime createdDate;
-    private OffsetDateTime lastModifiedDate;
 
+//    private OffsetDateTime createdDate;
+//    private OffsetDateTime lastModifiedDate;
+    @NotBlank
     private String beerName;
-    private BeerStyleEnum beerStyle;
+    @NotBlank
+    private String beerStyle;
+//    private BeerStyleEnum beerStyle;
 
+    @Positive
     private Long upc;
 
-    private Integer quantityOnHand;
+//    private Integer quantityOnHand;
 }

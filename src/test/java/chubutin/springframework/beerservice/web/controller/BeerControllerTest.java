@@ -28,9 +28,9 @@ class BeerControllerTest {
     ObjectMapper objectMapper;
 
     @Test
-    void getBeerNotFound() throws Exception{
+    void getBeer() throws Exception{
         mockMvc.perform(get("/api/v1/beer" + UUID.randomUUID()).accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
+                .andExpect(status().isNotFound());
     }
 
     @Test
@@ -39,9 +39,10 @@ class BeerControllerTest {
     }
 
     @Test
-    void saveBeer() throws  Exception{
-        BeerDto beerDto = BeerDto.builder().beerName("Heineken")
-                .id(UUID.randomUUID()).beerStyle(BeerStyleEnum.LAGER)
+    void handlePost() throws  Exception{
+        BeerDto beerDto = BeerDto.builder()
+                .beerName("Heineken")
+                .beerStyle("LAGER")
                 .build();
         String beerDtoJson = objectMapper.writeValueAsString(beerDto);
 
@@ -49,5 +50,45 @@ class BeerControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(beerDtoJson))
                 .andExpect(status().isCreated());
+    }
+
+    @Test
+    void handlePost400MissingBeerName() throws  Exception{
+        BeerDto beerDto = BeerDto.builder()
+                .beerStyle("LAGER")
+                .build();
+        String beerDtoJson = objectMapper.writeValueAsString(beerDto);
+
+        mockMvc.perform(post("/api/v1/beer")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(beerDtoJson))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void handlePost400MissingBeerStyle() throws  Exception{
+        BeerDto beerDto = BeerDto.builder()
+                .beerName("Name")
+                .build();
+        String beerDtoJson = objectMapper.writeValueAsString(beerDto);
+
+        mockMvc.perform(post("/api/v1/beer")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(beerDtoJson))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void handlePut() throws  Exception{
+        BeerDto beerDto = BeerDto.builder()
+                .beerName("Heineken")
+                .beerStyle("LAGER")
+                .build();
+        String beerDtoJson = objectMapper.writeValueAsString(beerDto);
+
+        mockMvc.perform(put("/api/v1/beer/" + UUID.randomUUID().toString())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(beerDtoJson))
+                .andExpect(status().isNoContent());
     }
 }
