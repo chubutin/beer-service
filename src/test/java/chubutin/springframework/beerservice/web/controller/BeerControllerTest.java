@@ -1,8 +1,8 @@
 package chubutin.springframework.beerservice.web.controller;
 
 import chubutin.springframework.beerservice.web.model.BeerDto;
-import chubutin.springframework.beerservice.web.model.BeerStyleEnum;
-import chubutin.springframework.beerservice.web.service.BeerServiceImpl;
+import chubutin.springframework.beerservice.services.BeerServiceImpl;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

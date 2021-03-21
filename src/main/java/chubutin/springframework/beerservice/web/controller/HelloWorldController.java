@@ -6,7 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import chubutin.springframework.beerservice.web.service.BeerService;
+import chubutin.springframework.beerservice.services.BeerService;
 
 @RequestMapping(value = "/v1/hello")
 @RestController

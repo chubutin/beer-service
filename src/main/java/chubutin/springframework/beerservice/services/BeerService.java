@@ -1,4 +1,4 @@
-package chubutin.springframework.beerservice.web.service;
+package chubutin.springframework.beerservice.services;
 
 import chubutin.springframework.beerservice.web.model.BeerDto;
 import chubutin.springframework.beerservice.web.model.BeerPagedList;
