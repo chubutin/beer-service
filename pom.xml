@@ -14,6 +14,8 @@
 	<name>beer-service</name>
 	<description>Demo project for Spring Boot for Beer Service</description>
 	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.sourceEncoding>UTF-8</project.reporting.sourceEncoding>
 		<java.version>11</java.version>
 		<jaxb.version>2.3.0</jaxb.version>
 		<maven.compiler.source>${java.version}</maven.compiler.source>

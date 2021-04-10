@@ -23,7 +23,7 @@ import java.util.UUID;
 
 
 @SpringBootTest(classes = {BeerMapperImpl.class, DateMapper.class})
-class BeerMapperTest {
+public class BeerMapperTest {
 
     final String beerName = "Andes";
     final String beerStyle = "IPA";
@@ -75,7 +75,6 @@ class BeerMapperTest {
                 .lastModifiedDate(lastModifiedDate)
                 .beerStyle(BeerStyleEnum.IPA)
                 .price(new BigDecimal("1.10"))
-                .quantityToBrew(12)
                 .build();
 
         Beer beer = beerMapper.beerDtoToBeer(beerDto);

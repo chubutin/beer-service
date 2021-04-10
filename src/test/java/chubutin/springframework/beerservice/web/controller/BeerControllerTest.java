@@ -1,27 +1,31 @@
 package chubutin.springframework.beerservice.web.controller;
 
+import chubutin.springframework.beerservice.domain.Beer;
+import chubutin.springframework.beerservice.repository.BeerRepository;
 import chubutin.springframework.beerservice.web.model.BeerDto;
-import chubutin.springframework.beerservice.services.BeerServiceImpl;
 
 import chubutin.springframework.beerservice.web.model.BeerStyleEnum;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.math.BigDecimal;
+import java.util.Optional;
 import java.util.UUID;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(BeerController.class)
-//these classes are loaded by hand because WebMvcTest only loads RestControllers
-@ContextConfiguration(classes = { BeerServiceImpl.class, BeerController.class, MvcExceptionHandler.class})
-class BeerControllerTest {
+@ComponentScan(basePackages = "chubutin.springframework.beerservice.web.mappers")
+public class BeerControllerTest {
 
     @Autowired
     MockMvc mockMvc;
@@ -29,21 +33,28 @@ class BeerControllerTest {
     @Autowired
     ObjectMapper objectMapper;
 
+    @MockBean
+    BeerRepository beerRepository;
+
     @Test
-    void getBeer() throws Exception{
-        mockMvc.perform(get("/api/v1/beer" + UUID.randomUUID()).accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isNotFound());
+    void getBeerById() throws Exception{
+        given(beerRepository.findById(any())).willReturn(Optional.of(Beer.builder().build()));
+
+        mockMvc.perform(get("/api/v1/beer/" + UUID.randomUUID()).accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
     }
 
     @Test
-    void getBeers() throws Exception {
+    void getAllBeers() throws Exception {
         mockMvc.perform(get("/api/v1/beer")).andExpect(status().isOk());
     }
 
     @Test
-    void handlePost() throws  Exception{
+    void saveNewBeer() throws  Exception{
         BeerDto beerDto = createBeerDto();
         String beerDtoJson = objectMapper.writeValueAsString(beerDto);
+
+        given(beerRepository.save(any())).willReturn(Beer.builder().id(UUID.randomUUID()).build());
 
         mockMvc.perform(post("/api/v1/beer")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -78,13 +89,19 @@ class BeerControllerTest {
     }
 
     @Test
-    void handlePut() throws  Exception{
+    void updateBeerById() throws  Exception{
         BeerDto beerDto = createBeerDto();
         String beerDtoJson = objectMapper.writeValueAsString(beerDto);
 
         mockMvc.perform(put("/api/v1/beer/" + UUID.randomUUID().toString())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(beerDtoJson))
+                .andExpect(status().isNoContent());
+    }
+
+    @Test
+    void deleteBeer() throws Exception {
+        mockMvc.perform(delete("/api/v1/beer/" + UUID.randomUUID().toString()))
                 .andExpect(status().isNoContent());
     }
 
