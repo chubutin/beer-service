@@ -13,7 +13,11 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import java.math.BigDecimal;
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 @Validated
 @RequiredArgsConstructor
@@ -32,7 +36,15 @@ public class BeerController {
     @GetMapping
     public ResponseEntity getAllBeers() {
 
-        return new ResponseEntity(beerMapper, HttpStatus.OK);
+        Iterable<Beer> beers = beerRepository.findAll();
+
+        //convert Iterable in Streameable object and transform to DTO
+        List<BeerDto> beersDto = StreamSupport.stream(beers.spliterator(), false).map(beer -> {
+            BeerDto beerDto = beerMapper.beerToBeerDto(beer);
+            return beerDto;
+        }).collect(Collectors.toList());
+
+        return new ResponseEntity(beers, HttpStatus.OK);
     }
 
     @PostMapping

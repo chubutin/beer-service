@@ -21,8 +21,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.util.StringUtils;
 
 import java.math.BigDecimal;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -49,16 +48,16 @@ public class BeerControllerTest {
     BeerRepository beerRepository;
 
     @Test
-    void getBeerById() throws Exception{
-        given(beerRepository.findById(any())).willReturn(Optional.of(Beer.builder().build()));
+    void getBeerById() throws Exception {
+        given(beerRepository.findById(any())).willReturn(Optional.of(createBeer()));
 
         mockMvc.perform(get("/api/v1/beer/{beerId}", UUID.randomUUID().toString())
                 .param("isCold", "yes")
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andDo(document("v1/beer",
+                .andDo(document("v1/beer-get",
                         pathParameters(
-                            parameterWithName("beerId").description("UUID of desired beer to get")
+                                parameterWithName("beerId").description("UUID of desired beer to get")
                         ),
                         requestParameters(
                                 parameterWithName("isCold").description("Is Beer Cold query param")
@@ -72,30 +71,53 @@ public class BeerControllerTest {
                                 fieldWithPath("beerStyle").description("Beer Style"),
                                 fieldWithPath("upc").description("UPC of Beer"),
                                 fieldWithPath("price").description("Price"),
-                                fieldWithPath("quantityOnHand").description("Quantity On hand")
+                                fieldWithPath("quantityOnHand").description("Quantity On hand"),
+                                fieldWithPath("minOnHand").description("Quantity On hand"),
+                                fieldWithPath("quantityToBrew").description("Quantity On hand")
                         )));
     }
 
     @Test
     void getAllBeers() throws Exception {
-        mockMvc.perform(get("/api/v1/beer")).andExpect(status().isOk())
-                    .andDo(document("v1/beer"));
+        List<Beer> beers = new ArrayList<Beer>();
+        beers.add(Beer.builder().build());
+        given(beerRepository.findAll()).willReturn(beers);
+
+        ConstrainedFields fields = new ConstrainedFields(BeerDto.class);
+
+        mockMvc.perform(get("/api/v1/beer"))
+                .andExpect(status().isOk())
+                .andDo(document("v1/beer-all",
+                        responseFields(
+                                fieldWithPath("[].id").description("Id of Beer"),
+                                fieldWithPath("[].version").description("Version number"),
+                                fieldWithPath("[].createdDate").description("Date Created"),
+                                fieldWithPath("[].lastModifiedDate").description("Date Updated"),
+                                fieldWithPath("[].beerName").description("Beer Name"),
+                                fieldWithPath("[].beerStyle").description("Beer Style"),
+                                fieldWithPath("[].upc").description("UPC of Beer"),
+                                fieldWithPath("[].price").description("Price"),
+                                fieldWithPath("[].quantityOnHand").description("Quantity On hand"),
+                                fieldWithPath("[].minOnHand").description("Quantity On hand"),
+                                fieldWithPath("[].quantityToBrew").description("Quantity On hand")
+                        )));
     }
 
     @Test
-    void saveNewBeer() throws  Exception{
+    void saveNewBeer() throws Exception {
         BeerDto beerDto = createBeerDto();
         String beerDtoJson = objectMapper.writeValueAsString(beerDto);
 
         ConstrainedFields fields = new ConstrainedFields(BeerDto.class);
-
-        given(beerRepository.save(any())).willReturn(Beer.builder().id(UUID.randomUUID()).build());
+        Beer beer = createBeer();
+        beer.setId(UUID.randomUUID());
+        given(beerRepository.save(any())).willReturn(beer);
 
         mockMvc.perform(post("/api/v1/beer")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(beerDtoJson))
                 .andExpect(status().isCreated())
-                .andDo(document("v1/beer",
+                .andDo(document("v1/beer-new",
                         requestFields(
                                 fields.withPath("id").description("Id of Beer").ignored(),
                                 fields.withPath("version").description("Version number").ignored(),
@@ -105,7 +127,9 @@ public class BeerControllerTest {
                                 fields.withPath("beerStyle").description("Beer Style"),
                                 fields.withPath("upc").description("UPC of Beer"),
                                 fields.withPath("price").description("Price"),
-                                fields.withPath("quantityOnHand").description("Quantity On hand")
+                                fields.withPath("minOnHand").description("Minimum On hand"),
+                                fields.withPath("quantityOnHand").description("Quantity On hand"),
+                                fields.withPath("quantityToBrew").description("Quantity to brew")
                         )));
     }
 
@@ -136,7 +160,7 @@ public class BeerControllerTest {
 //    }
 
     @Test
-    void updateBeerById() throws  Exception{
+    void updateBeerById() throws Exception {
         BeerDto beerDto = createBeerDto();
         String beerDtoJson = objectMapper.writeValueAsString(beerDto);
 
@@ -158,6 +182,18 @@ public class BeerControllerTest {
                 .beerStyle(BeerStyleEnum.IPA)
                 .upc(1234567890L)
                 .price(new BigDecimal("1.20"))
+                .build();
+    }
+
+    private Beer createBeer() {
+        return Beer.builder()
+                .beerName("Heineken")
+                .beerStyle("IPA")
+                .upc(1234567890L)
+                .price(new BigDecimal("1.20"))
+                .quantityToBrew(2)
+                .quantityToBrew(5)
+                .minOnHand(1)
                 .build();
     }
 
